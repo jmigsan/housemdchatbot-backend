@@ -1,6 +1,6 @@
 # House MD Chatbot Backend
 
-This is the backend to the [House MD Chatbot Frontend]() and is designed to work with that repo.
+This is the backend to the [House MD Chatbot Frontend](https://github.com/jmigsan/housemdchatbot-frontend) and is designed to work with that repo.
 
 **A sarcastic, diagnostic AI chatbot emulating Dr. Gregory House from _House M.D._**
 This project uses **FastAPI**, **WebSockets**, **Gemini**, and **Pinecone** to deliver real-time, medically informed (and snarky) responses.

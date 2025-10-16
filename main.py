@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 from pydantic import BaseModel
-from sentence_transformers import SentenceTransformer
 from pinecone import Pinecone
 import os
 import json
@@ -20,7 +19,10 @@ housemd_client = OpenAI(
     api_key=os.getenv("RUNPOD_API_KEY")
 )
 
-model = SentenceTransformer("all-MiniLM-L6-v2")
+deepinfra_client = OpenAI(
+    api_key=os.getenv("DEEPINFRA_API_KEY"),
+    base_url="https://api.deepinfra.com/v1/openai",
+)
 
 pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
 dense_index = pc.Index("house-md-medicine-wiki-articles")
@@ -117,7 +119,15 @@ Response:
             database_search_results = ""
 
             if (vector_query_json['requires_search']):
-                query_embedding = model.encode(vector_query_json['query']).tolist()
+                def get_embedding(text: str) -> list[float]:
+                    embeddings = deepinfra_client.embeddings.create(
+                        model="sentence-transformers/all-MiniLM-L6-v2",
+                        input=text,
+                        encoding_format="float"
+                    )
+                    return embeddings.data[0].embedding
+                
+                query_embedding = get_embedding(vector_query_json['query'])
 
                 query_results = dense_index.query(
                     namespace="__default__",
@@ -187,7 +197,7 @@ Response:
         print(e)
     finally:
         await websocket.close()
-    
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}

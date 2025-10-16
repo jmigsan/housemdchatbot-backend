@@ -1,0 +1,33 @@
+# fly.toml app configuration file generated for housemdchatbot-backend on 2025-10-16T15:02:05+01:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'housemdchatbot-backend'
+primary_region = 'lhr'
+
+[build]
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
+
+[[http_service.tcp_checks]]
+    interval = "15s"
+    timeout = "2s"
+    grace_period = "1s"
+
+[[http_service.http_checks]]
+    interval = "10s"
+    timeout = "2s"
+    method = "GET"
+    path = "/health"

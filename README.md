@@ -13,7 +13,6 @@ This project uses **FastAPI**, **WebSockets**, **Gemini**, and **Pinecone** to d
 -   **Semantic search** with Pinecone and Sentence Transformers to fetch relevant medical knowledge.
 -   **Dr. House’s personality**: Sarcastic, blunt, and diagnostically brilliant.
 -   **Dynamic RAG (Retrieval-Augmented Generation)** for context-aware answers.
--   **Lightweight**: Just one `main.py` file for the entire backend.
 
 ---
 

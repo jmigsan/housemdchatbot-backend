@@ -1,11 +1,18 @@
-FROM python:3.11-slim
+FROM ghcr.io/astral-sh/uv:python3.11-bookworm-slim AS build
+
 WORKDIR /app
 
-COPY requirements.txt .
-COPY main.py .
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-install-project --no-dev
 
-RUN pip install --no-cache-dir -r requirements.txt
+FROM python:3.11-slim-bookworm
 
-EXPOSE 8000
+WORKDIR /app
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+ENV PYTHONUNBUFFERED=1
+ENV PATH="/app/.venv/bin:$PATH"
+
+COPY --from=build /app/.venv /app/.venv
+COPY app /app/app
+
+CMD ["sh", "-c", "exec uvicorn app.main:app --host :: --port ${PORT:-8000}"]

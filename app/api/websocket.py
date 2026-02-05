@@ -1,4 +1,5 @@
 from fastapi import APIRouter, WebSocket
+from starlette.websockets import WebSocketState
 from app.schemas.chat import Message
 from app.core.utils.datetime import now_iso
 from app.core.llm import generate_vector_query, generate_housemd_response
@@ -54,4 +55,5 @@ async def chat_websocket_endpoint(websocket: WebSocket):
         handle_websocket_exception(ws, e)
 
     finally:
-        await ws.close()
+        if websocket.client_state != WebSocketState.DISCONNECTED:
+            await ws.close()

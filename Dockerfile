@@ -15,4 +15,4 @@ ENV PATH="/app/.venv/bin:$PATH"
 COPY --from=build /app/.venv /app/.venv
 COPY app /app/app
 
-CMD ["sh", "-c", "exec uvicorn app.main:app --host :: --port ${PORT:-8000}"]
+CMD ["sh", "-c", "exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

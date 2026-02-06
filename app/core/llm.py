@@ -69,6 +69,12 @@ Response:
     return vector_query_json 
 
 
+def clean_housemd_response(text):
+    # Remove <think> tags and any trailing newline or whitespace
+    cleaned_text = re.sub(r'<think>.*?</think>\s*', '', text, flags=re.DOTALL)
+    return cleaned_text.strip()  # Remove any leading/trailing whitespace
+
+
 def generate_housemd_response(database_search_results, data, messages):
     rag_input =f"""<database_search_results>
 {database_search_results if database_search_results else "No relevant documents found."}</database_search_results>
@@ -97,11 +103,6 @@ def generate_housemd_response(database_search_results, data, messages):
 
     response_text = response.choices[0].message.content
     print('Response:',response_text)
-
-    def clean_housemd_response(text):
-        # Remove <think> tags and any trailing newline or whitespace
-        cleaned_text = re.sub(r'<think>.*?</think>\s*', '', text, flags=re.DOTALL)
-        return cleaned_text.strip()  # Remove any leading/trailing whitespace
     
     cleaned_response_text = clean_housemd_response(response_text)
     return cleaned_response_text

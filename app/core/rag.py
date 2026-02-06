@@ -1,5 +1,15 @@
 from app.dependencies import get_deepinfra_client, get_pinecone_index
 
+
+def get_embedding(text, deepinfra_client) -> list[float]:
+    embeddings = deepinfra_client.embeddings.create(
+        model="sentence-transformers/all-MiniLM-L6-v2",
+        input=text,
+        encoding_format="float"
+    )
+    return embeddings.data[0].embedding
+
+
 def search_vector_database(vector_query):
     deepinfra_client = get_deepinfra_client()
     pinecone_index = get_pinecone_index()
@@ -7,15 +17,8 @@ def search_vector_database(vector_query):
     database_search_results = ""
 
     if (vector_query['requires_search']):
-        def get_embedding(text: str) -> list[float]:
-            embeddings = deepinfra_client.embeddings.create(
-                model="sentence-transformers/all-MiniLM-L6-v2",
-                input=text,
-                encoding_format="float"
-            )
-            return embeddings.data[0].embedding
         
-        query_embedding = get_embedding(vector_query['query'])
+        query_embedding = get_embedding(vector_query['query'], deepinfra_client)
 
         query_results = pinecone_index.query(
             namespace="__default__",

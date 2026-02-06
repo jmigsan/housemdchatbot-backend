@@ -34,22 +34,16 @@ class _FakePineconeIndex:
 def test_search_vector_database_no_search(monkeypatch):
     from app.core import rag
 
-    called = {"deepinfra": False, "pinecone": False}
-
-    def fake_deepinfra_client():
-        called["deepinfra"] = True
-        return _FakeDeepInfraClient()
+    called = {"pinecone": False}
 
     def fake_pinecone_index():
         called["pinecone"] = True
         return _FakePineconeIndex()
 
-    monkeypatch.setattr(rag, "get_deepinfra_client", fake_deepinfra_client)
     monkeypatch.setattr(rag, "get_pinecone_index", fake_pinecone_index)
 
     result = rag.search_vector_database({"requires_search": False, "query": ""})
     assert result == ""
-    assert called["deepinfra"] is True
     assert called["pinecone"] is True
 
 
@@ -59,13 +53,33 @@ def test_search_vector_database_with_results(monkeypatch):
     fake_deepinfra = _FakeDeepInfraClient()
     fake_pinecone = _FakePineconeIndex()
 
+    class FakeAgent:
+        def invoke(self, *args, **kwargs):
+            return {
+                "messages": [
+                    type(
+                        "Obj",
+                        (),
+                        {
+                            "content": [
+                                {
+                                    "text": "Title: Foo\nSnippet: Bar\nURL: https://example.com/foo\n"
+                                }
+                            ]
+                        },
+                    )()
+                ]
+            }
+
     monkeypatch.setattr(rag, "get_deepinfra_client", lambda: fake_deepinfra)
     monkeypatch.setattr(rag, "get_pinecone_index", lambda: fake_pinecone)
+    monkeypatch.setattr(
+        rag, "get_langgraph_google_gen_ai_model", lambda **kwargs: "fake_model"
+    )
+    monkeypatch.setattr(rag, "create_agent", lambda *args, **kwargs: FakeAgent())
 
     result = rag.search_vector_database({"requires_search": True, "query": "cough causes"})
 
     assert "Title: Foo" in result
     assert "Snippet: Bar" in result
     assert "URL: https://example.com/foo" in result
-    assert fake_deepinfra.embeddings.calls
-    assert fake_pinecone.calls

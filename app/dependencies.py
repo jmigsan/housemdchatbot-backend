@@ -3,6 +3,7 @@ from functools import cache
 from openai import OpenAI
 from app.config import get_settings
 from pinecone import Pinecone
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 @cache
 def get_gemini_client():
@@ -34,3 +35,9 @@ def get_pinecone_index():
     pc = Pinecone(api_key=settings.pinecone_api_key)
     pinecone_index = pc.Index(settings.pinecone_index_name)
     return pinecone_index
+
+# Not cached.
+def get_langgraph_google_gen_ai_model(model: str):
+    settings = get_settings()
+    model_client = ChatGoogleGenerativeAI(model=model, api_key=settings.gemini_api_key)
+    return model_client

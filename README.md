@@ -9,10 +9,10 @@ This project uses **FastAPI**, **WebSockets**, **Gemini**, and **Pinecone** to d
 
 ## 🌟 Features
 
--   **Real-time WebSocket communication** for instant responses.
--   **Semantic search** with Pinecone and Sentence Transformers to fetch relevant medical knowledge.
--   **Dr. House’s personality**: Sarcastic, blunt, and diagnostically brilliant.
--   **Dynamic RAG (Retrieval-Augmented Generation)** for context-aware answers.
+- **Real-time WebSocket communication** for instant responses.
+- **Semantic search** with Pinecone and Sentence Transformers to fetch relevant medical knowledge.
+- **Dr. House’s personality**: Sarcastic, blunt, and diagnostically brilliant.
+- **Dynamic RAG (Retrieval-Augmented Generation)** for context-aware answers.
 
 ---
 
@@ -30,8 +30,8 @@ This project uses **FastAPI**, **WebSockets**, **Gemini**, and **Pinecone** to d
 
 ### Prerequisites
 
--   Python 3.11
--   API keys for **Pinecone**, **Gemini**, and **RunPod** (see `.env.example`).
+- Python 3.11
+- API keys for **Pinecone**, **Gemini**, and **RunPod** (see `.env.example`).
 
 ### Installation
 
@@ -40,3 +40,9 @@ This project uses **FastAPI**, **WebSockets**, **Gemini**, and **Pinecone** to d
     git clone https://github.com/jmigsan/housemdchatbot-backend.git
     cd housemdchatbot-backend
     ```
+
+### Running
+
+```
+uv run uvicorn app.main:app --reload
+```

@@ -1,4 +1,4 @@
-from app.dependencies import get_deepinfra_client, get_pinecone_index, get_langgraph_google_gen_ai_model
+from app.dependencies import get_deepinfra_client, get_langgraph_google_gen_ai_model, get_pinecone_index
 from langchain.agents import create_agent
 from langchain.tools import tool
 from langchain_core.tracers import ConsoleCallbackHandler
@@ -60,6 +60,10 @@ def search_vector_database(vector_query):
         
         output = result["messages"][-1].content[0]['text']
         return output
-    
-    else:
-        return ''
+
+yo = search_vector_database({
+    "query": "back pains",
+    "requires_search": True
+})
+print(yo)
+print(type(yo))

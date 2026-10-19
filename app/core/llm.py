@@ -43,7 +43,7 @@ Response:
 
     # read convrsation to create a good search term
     vector_query = gemini_client.models.generate_content(
-        model="gemini-2.0-flash",
+        model="gemini-2.5-flash",
         contents=conversation_to_query,
         config=types.GenerateContentConfig(
             response_mime_type="application/json",
